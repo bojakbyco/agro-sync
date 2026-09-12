@@ -353,6 +353,7 @@ export default function App() {
               onSaved={() => {
                 setView("dash");
                 showToast(navigator.onLine ? "Zgłoszenie wysłane do IRZplus" : "Zapisano offline — wyśle po powrocie sieci");
+                refresh();
               }}
             />
           </div>
