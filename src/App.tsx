@@ -233,14 +233,17 @@ export default function App() {
     const goOffline = () => setOnline(false);
     window.addEventListener("online", goOnline);
     window.addEventListener("offline", goOffline);
-    const onChange = (): void => {
-      refresh();
+    // Uwaga: "changes" w Dexie wymaga addonu dexie-observable — dlatego lista
+    // odświeża się jawnie po każdej mutacji (submit/retry) oraz przy powrocie
+    // na wierzch (visibilitychange).
+    const onVisible = (): void => {
+      if (document.visibilityState === "visible") refresh();
     };
-    db.on("changes").subscribe(onChange);
+    document.addEventListener("visibilitychange", onVisible);
     return () => {
       window.removeEventListener("online", goOnline);
       window.removeEventListener("offline", goOffline);
-      db.on("changes").unsubscribe(onChange);
+      document.removeEventListener("visibilitychange", onVisible);
     };
   }, [refresh]);
 
